@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block title %}Consulting{% endblock %}
+{% block content %}
+<div class="section-head">
+  <h1>Consulting</h1>
+  <a class="btn" href="{{ url_for('consulting.new_entry') }}">+ New entry</a>
+</div>
+<table class="table">
+  <thead>
+    <tr><th>Start</th><th>End</th><th>Description</th><th>Hours</th><th>Earned</th><th></th></tr>
+  </thead>
+  <tbody>
+    {% for c in entries %}
+    <tr>
+      <td>{{ c.start_date | dateonly }}</td>
+      <td>{{ c.end_date | dateonly }}</td>
+      <td>{{ c.description }}</td>
+      <td>{{ c.total_hours }}</td>
+      <td>{{ c.total_earned | money }}</td>
+      <td>
+        <a href="{{ url_for('consulting.edit_entry', entry_id=c.id) }}">Edit</a>
+        <form method="post" action="{{ url_for('consulting.delete_entry', entry_id=c.id) }}" onsubmit="return confirm('Delete this entry?');" style="display:inline">
+          <button type="submit" class="link-btn">Delete</button>
+        </form>
+      </td>
+    </tr>
+    {% else %}
+    <tr><td colspan="6">No consulting entries yet.</td></tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

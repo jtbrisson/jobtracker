@@ -1,0 +1,103 @@
+{% extends "base.html" %}
+{% block title %}Dashboard{% endblock %}
+{% block content %}
+<h1>Dashboard</h1>
+
+<div class="cards">
+  <div class="card">
+    <h3>This week</h3>
+    {% if this_week %}
+      <p class="big">{{ this_week.week_label }}</p>
+      <p>{{ this_week.start_date | dateonly }} &ndash; {{ this_week.end_date | dateonly }}</p>
+      <p>
+        EDD confirmation:
+        <strong>{{ "Done" if this_week.edd_confirmation else "Not yet" }}</strong>
+      </p>
+    {% else %}
+      <p>No claim week found for today. Run <code>flask seed-weeks</code> or the Excel importer.</p>
+    {% endif %}
+  </div>
+
+  <div class="card">
+    <h3>Applications</h3>
+    <p class="big">{{ total_applications }}</p>
+    <p>total submitted</p>
+  </div>
+
+  <div class="card">
+    <h3>Unconfirmed EDD weeks</h3>
+    <p class="big">{{ unconfirmed_weeks }}</p>
+    <p>past weeks not yet marked confirmed</p>
+  </div>
+</div>
+
+<div class="grid-2">
+  <section>
+    <div class="section-head">
+      <h2>Upcoming / recent claim weeks</h2>
+      <a href="{{ url_for('claims.list_weeks') }}">View all &rarr;</a>
+    </div>
+    <table class="table">
+      <thead>
+        <tr><th>Week</th><th>Dates</th><th>Confirmed</th><th>Reported consulting</th></tr>
+      </thead>
+      <tbody>
+        {% for week in upcoming_weeks %}
+        <tr>
+          <td><a href="{{ url_for('claims.week_detail', week_id=week.id) }}">{{ week.week_label }}</a></td>
+          <td>{{ week.start_date | dateonly }} &ndash; {{ week.end_date | dateonly }}</td>
+          <td>{{ "Yes" if week.edd_confirmation else "No" }}</td>
+          <td>{{ "Yes" if week.edd_reported_consulting else "No" }}</td>
+        </tr>
+        {% else %}
+        <tr><td colspan="4">No claim weeks yet.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </section>
+
+  <section>
+    <div class="section-head">
+      <h2>Recent applications</h2>
+      <a href="{{ url_for('applications.list_applications') }}">View all &rarr;</a>
+    </div>
+    <table class="table">
+      <thead><tr><th>Date</th><th>Company</th><th>Position</th><th>Status</th></tr></thead>
+      <tbody>
+        {% for a in recent_applications %}
+        <tr>
+          <td>{{ a.application_date | dateonly }}</td>
+          <td>{{ a.company }}</td>
+          <td>{{ a.position }}</td>
+          <td><span class="badge">{{ a.status }}</span></td>
+        </tr>
+        {% else %}
+        <tr><td colspan="4">No applications yet.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </section>
+</div>
+
+<section>
+  <div class="section-head">
+    <h2>Recent consulting</h2>
+    <a href="{{ url_for('consulting.list_entries') }}">View all &rarr;</a>
+  </div>
+  <table class="table">
+    <thead><tr><th>Dates</th><th>Description</th><th>Hours</th><th>Earned</th></tr></thead>
+    <tbody>
+      {% for c in recent_consulting %}
+      <tr>
+        <td>{{ c.start_date | dateonly }} &ndash; {{ c.end_date | dateonly }}</td>
+        <td>{{ c.description }}</td>
+        <td>{{ c.total_hours }}</td>
+        <td>{{ c.total_earned | money }}</td>
+      </tr>
+      {% else %}
+      <tr><td colspan="4">No consulting entries yet.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</section>
+{% endblock %}

@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+{% block title %}Log in{% endblock %}
+{% block content %}
+<div class="login-card">
+  <h1>Job & Claim Tracker</h1>
+  <p>Track your unemployment claim weeks, CA EDD certifications, job applications, and consulting work in one place.</p>
+  <a class="btn btn-github" href="{{ url_for('auth.login_github') }}">Sign in with GitHub</a>
+</div>
+{% endblock %}

@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% block title %}{{ week.week_label }}{% endblock %}
+{% block content %}
+<div class="section-head">
+  <h1>{{ week.week_label }}</h1>
+  <a href="{{ url_for('claims.list_weeks') }}">&larr; All weeks</a>
+</div>
+<p>{{ week.start_date | dateonly }} &ndash; {{ week.end_date | dateonly }}</p>
+<p>
+  EDD confirmation: <strong>{{ "Yes" if week.edd_confirmation else "No" }}</strong> &middot;
+  EDD reported consulting: <strong>{{ "Yes" if week.edd_reported_consulting else "No" }}</strong>
+</p>
+
+<h2>Job applications this week ({{ week.jobs_applied_count }})</h2>
+<table class="table">
+  <thead><tr><th>Date</th><th>Company</th><th>Position</th><th>Status</th></tr></thead>
+  <tbody>
+    {% for a in week.job_applications %}
+    <tr>
+      <td>{{ a.application_date | dateonly }}</td>
+      <td><a href="{{ url_for('applications.edit_application', application_id=a.id) }}">{{ a.company }}</a></td>
+      <td>{{ a.position }}</td>
+      <td><span class="badge">{{ a.status }}</span></td>
+    </tr>
+    {% else %}
+    <tr><td colspan="4">None.</td></tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+<h2>Consulting this week ({{ week.total_consulting_hours }} hrs, {{ week.total_consulting_earned | money }})</h2>
+<table class="table">
+  <thead><tr><th>Dates</th><th>Description</th><th>Hours</th><th>Earned</th></tr></thead>
+  <tbody>
+    {% for c in week.consulting_entries %}
+    <tr>
+      <td>{{ c.start_date | dateonly }} &ndash; {{ c.end_date | dateonly }}</td>
+      <td><a href="{{ url_for('consulting.edit_entry', entry_id=c.id) }}">{{ c.description }}</a></td>
+      <td>{{ c.total_hours }}</td>
+      <td>{{ c.total_earned | money }}</td>
+    </tr>
+    {% else %}
+    <tr><td colspan="4">None.</td></tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

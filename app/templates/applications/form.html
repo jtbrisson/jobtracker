@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+{% block title %}{{ "Edit" if application else "New" }} Application{% endblock %}
+{% block content %}
+<h1>{{ "Edit" if application else "New" }} Application</h1>
+<form method="post" enctype="multipart/form-data" class="form">
+  {{ form.hidden_tag() }}
+
+  <div class="field">
+    {{ form.application_date.label }} {{ form.application_date() }}
+    {% for e in form.application_date.errors %}<p class="error">{{ e }}</p>{% endfor %}
+  </div>
+  <div class="field">
+    {{ form.company.label }} {{ form.company(size=40) }}
+    {% for e in form.company.errors %}<p class="error">{{ e }}</p>{% endfor %}
+  </div>
+  <div class="field">
+    {{ form.position.label }} {{ form.position(size=40) }}
+    {% for e in form.position.errors %}<p class="error">{{ e }}</p>{% endfor %}
+  </div>
+  <div class="field">
+    {{ form.status.label }} {{ form.status() }}
+  </div>
+  <div class="field">
+    {{ form.job_description_text.label }} {{ form.job_description_text(rows=6) }}
+  </div>
+
+  <hr>
+  <p class="hint">Attach files (PDF/Word preferred). Uploading a new file replaces the old one on save.</p>
+
+  <div class="field">
+    {{ form.resume_file.label }} {{ form.resume_file() }}
+    {% if application and application.resume_filename %}<p class="hint">Current: {{ application.resume_filename }}</p>{% endif %}
+  </div>
+  <div class="field">
+    {{ form.cover_letter_file.label }} {{ form.cover_letter_file() }}
+    {% if application and application.cover_letter_filename %}<p class="hint">Current: {{ application.cover_letter_filename }}</p>{% endif %}
+  </div>
+  <div class="field">
+    {{ form.job_description_file.label }} {{ form.job_description_file() }}
+    {% if application and application.job_description_filename %}<p class="hint">Current: {{ application.job_description_filename }}</p>{% endif %}
+  </div>
+
+  <div class="field">
+    {{ form.notes.label }} {{ form.notes(rows=4) }}
+  </div>
+
+  {{ form.submit(class_="btn") }}
+  <a href="{{ url_for('applications.list_applications') }}">Cancel</a>
+</form>
+{% endblock %}

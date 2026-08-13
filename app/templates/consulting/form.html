@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block title %}{{ "Edit" if entry else "New" }} Consulting Entry{% endblock %}
+{% block content %}
+<h1>{{ "Edit" if entry else "New" }} Consulting Entry</h1>
+<form method="post" class="form">
+  {{ form.hidden_tag() }}
+
+  <div class="field">
+    {{ form.description.label }} {{ form.description(size=40) }}
+    {% for e in form.description.errors %}<p class="error">{{ e }}</p>{% endfor %}
+  </div>
+  <div class="field">
+    {{ form.start_date.label }} {{ form.start_date() }}
+    {% for e in form.start_date.errors %}<p class="error">{{ e }}</p>{% endfor %}
+  </div>
+  <div class="field">
+    {{ form.end_date.label }} {{ form.end_date() }}
+    {% for e in form.end_date.errors %}<p class="error">{{ e }}</p>{% endfor %}
+  </div>
+  <div class="field">
+    {{ form.total_hours.label }} {{ form.total_hours() }}
+  </div>
+  <div class="field">
+    {{ form.total_earned.label }} {{ form.total_earned() }}
+  </div>
+  <div class="field">
+    {{ form.notes.label }} {{ form.notes(rows=4) }}
+  </div>
+
+  {{ form.submit(class_="btn") }}
+  <a href="{{ url_for('consulting.list_entries') }}">Cancel</a>
+</form>
+{% endblock %}

@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% block title %}Claim Weeks{% endblock %}
+{% block content %}
+<div class="section-head">
+  <h1>Claim Weeks</h1>
+</div>
+<table class="table">
+  <thead>
+    <tr>
+      <th>Week</th><th>Start</th><th>End</th><th>Jobs applied</th>
+      <th>Consulting hrs</th><th>Consulting earned</th>
+      <th>EDD confirmation</th><th>EDD reported consulting</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for week in weeks %}
+    <tr>
+      <td><a href="{{ url_for('claims.week_detail', week_id=week.id) }}">{{ week.week_label }}</a></td>
+      <td>{{ week.start_date | dateonly }}</td>
+      <td>{{ week.end_date | dateonly }}</td>
+      <td>{{ week.jobs_applied_count }}</td>
+      <td>{{ week.total_consulting_hours }}</td>
+      <td>{{ week.total_consulting_earned | money }}</td>
+      <td>
+        <form method="post" action="{{ url_for('claims.toggle_flag', week_id=week.id) }}">
+          <input type="hidden" name="field" value="edd_confirmation">
+          <button type="submit" class="toggle {{ 'on' if week.edd_confirmation else 'off' }}">
+            {{ "Yes" if week.edd_confirmation else "No" }}
+          </button>
+        </form>
+      </td>
+      <td>
+        <form method="post" action="{{ url_for('claims.toggle_flag', week_id=week.id) }}">
+          <input type="hidden" name="field" value="edd_reported_consulting">
+          <button type="submit" class="toggle {{ 'on' if week.edd_reported_consulting else 'off' }}">
+            {{ "Yes" if week.edd_reported_consulting else "No" }}
+          </button>
+        </form>
+      </td>
+    </tr>
+    {% else %}
+    <tr><td colspan="8">No claim weeks yet. Run <code>flask seed-weeks</code>.</td></tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}
