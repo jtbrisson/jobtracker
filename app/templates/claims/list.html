@@ -26,16 +26,16 @@
       <td>
         <form method="post" action="{{ url_for('claims.toggle_flag', week_id=week.id) }}">
           <input type="hidden" name="field" value="edd_confirmation">
-          <button type="submit" class="toggle {{ 'on' if week.edd_confirmation else 'off' }}">
-            {{ "Yes" if week.edd_confirmation else "No" }}
+          <button type="submit" class="toggle {{ 'on' if week.edd_confirmation == True else ('off' if week.edd_confirmation == False else 'na') }}">
+            {{ "Yes" if week.edd_confirmation == True else ("No" if week.edd_confirmation == False else "N/A") }}
           </button>
         </form>
       </td>
       <td>
         <form method="post" action="{{ url_for('claims.toggle_flag', week_id=week.id) }}">
           <input type="hidden" name="field" value="edd_reported_consulting">
-          <button type="submit" class="toggle {{ 'on' if week.edd_reported_consulting else 'off' }}">
-            {{ "Yes" if week.edd_reported_consulting else "No" }}
+          <button type="submit" class="toggle {{ 'on' if week.edd_reported_consulting == True else ('off' if week.edd_reported_consulting == False else 'na') }}">
+            {{ "Yes" if week.edd_reported_consulting == True else ("No" if week.edd_reported_consulting == False else "N/A") }}
           </button>
         </form>
       </td>

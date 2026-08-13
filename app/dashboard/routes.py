@@ -29,7 +29,7 @@ def home():
 
     total_applications = JobApplication.query.count()
     unconfirmed_weeks = ClaimWeek.query.filter(
-        ClaimWeek.end_date < date.today(), ClaimWeek.edd_confirmation.is_(False)
+        ClaimWeek.end_date < date.today(), ClaimWeek.edd_confirmation.isnot(True)
     ).count()
 
     return render_template(

@@ -5,6 +5,9 @@ from app.extensions import db
 from app.models import ClaimWeek
 from app.claims import bp
 
+# Tri-state cycle for the EDD toggle buttons: No -> Yes -> N/A -> No -> ...
+EDD_STATE_CYCLE = [False, True, None]
+
 
 @bp.route("/")
 @login_required
@@ -21,7 +24,8 @@ def toggle_flag(week_id):
     if field not in ("edd_confirmation", "edd_reported_consulting"):
         flash("Unknown field.", "error")
         return redirect(url_for("claims.list_weeks"))
-    setattr(week, field, not getattr(week, field))
+    current_index = EDD_STATE_CYCLE.index(getattr(week, field))
+    setattr(week, field, EDD_STATE_CYCLE[(current_index + 1) % len(EDD_STATE_CYCLE)])
     db.session.commit()
     return redirect(request.referrer or url_for("claims.list_weeks"))
 

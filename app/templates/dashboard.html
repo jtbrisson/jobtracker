@@ -11,7 +11,7 @@
       <p>{{ this_week.start_date | dateonly }} &ndash; {{ this_week.end_date | dateonly }}</p>
       <p>
         EDD confirmation:
-        <strong>{{ "Done" if this_week.edd_confirmation else "Not yet" }}</strong>
+        <strong>{{ "Done" if this_week.edd_confirmation == True else ("Marked No" if this_week.edd_confirmation == False else "Not yet") }}</strong>
       </p>
     {% else %}
       <p>No claim week found for today. Run <code>flask seed-weeks</code> or the Excel importer.</p>
@@ -46,8 +46,8 @@
         <tr>
           <td><a href="{{ url_for('claims.week_detail', week_id=week.id) }}">{{ week.week_label }}</a></td>
           <td>{{ week.start_date | dateonly }} &ndash; {{ week.end_date | dateonly }}</td>
-          <td>{{ "Yes" if week.edd_confirmation else "No" }}</td>
-          <td>{{ "Yes" if week.edd_reported_consulting else "No" }}</td>
+          <td>{{ "Yes" if week.edd_confirmation == True else ("No" if week.edd_confirmation == False else "N/A") }}</td>
+          <td>{{ "Yes" if week.edd_reported_consulting == True else ("No" if week.edd_reported_consulting == False else "N/A") }}</td>
         </tr>
         {% else %}
         <tr><td colspan="4">No claim weeks yet.</td></tr>

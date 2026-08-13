@@ -41,8 +41,9 @@ class ClaimWeek(db.Model):
     start_date = db.Column(db.Date, nullable=False, unique=True, index=True)
     end_date = db.Column(db.Date, nullable=False)
 
-    edd_confirmation = db.Column(db.Boolean, default=False, nullable=False)
-    edd_reported_consulting = db.Column(db.Boolean, default=False, nullable=False)
+    # Tri-state: True = Yes, False = No, None = N/A
+    edd_confirmation = db.Column(db.Boolean, default=False, nullable=True)
+    edd_reported_consulting = db.Column(db.Boolean, default=False, nullable=True)
     notes = db.Column(db.Text)
 
     job_applications = db.relationship(
