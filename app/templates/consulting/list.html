@@ -5,7 +5,8 @@
   <h1>Consulting</h1>
   <a class="btn" href="{{ url_for('consulting.new_entry') }}">+ New entry</a>
 </div>
-<table class="table">
+<div class="table-wrapper">
+  <table class="table">
   <thead>
     <tr><th>Start</th><th>End</th><th>Description</th><th>Hours</th><th>Earned</th><th></th></tr>
   </thead>
@@ -28,5 +29,6 @@
     <tr><td colspan="6">No consulting entries yet.</td></tr>
     {% endfor %}
   </tbody>
-</table>
+  </table>
+</div>
 {% endblock %}
