@@ -66,9 +66,11 @@ h2 { font-size: 18px; margin: 28px 0 10px; }
 .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; }
 @media (max-width: 860px) { .grid-2 { grid-template-columns: 1fr; } }
 
-.table { width: 100%; border-collapse: collapse; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; }
+.table-wrapper { display: block; width: 100%; max-height: calc(100vh - 200px); overflow-y: auto; border: 1px solid var(--border); border-radius: var(--radius); }
+.table { width: 100%; border-collapse: collapse; background: var(--surface); }
+.table thead { position: sticky; top: 0; background: #fafafa; z-index: 10; }
 .table th, .table td { text-align: left; padding: 10px 12px; border-bottom: 1px solid var(--border); font-size: 14px; }
-.table th { background: #fafafa; font-weight: 600; color: var(--muted); position: sticky; top: 0; z-index: 10; }
+.table th { font-weight: 600; color: var(--muted); }
 .table tr:last-child td { border-bottom: none; }
 
 .badge { display: inline-block; padding: 2px 8px; border-radius: 999px; background: #eef1ff; color: var(--accent); font-size: 12px; font-weight: 600; }

@@ -4,8 +4,9 @@
 <div class="section-head">
   <h1>Claim Weeks</h1>
 </div>
-<table class="table">
-  <thead>
+<div class="table-wrapper">
+  <table class="table">
+    <thead>
     <tr>
       <th>Year</th><th>Week</th><th>Start</th><th>End</th><th>Jobs applied</th>
       <th>Consulting hrs</th><th>Consulting earned</th>
@@ -43,5 +44,6 @@
     <tr><td colspan="9">No claim weeks yet. Run <code>flask seed-weeks</code>.</td></tr>
     {% endfor %}
   </tbody>
-</table>
+  </table>
+</div>
 {% endblock %}
