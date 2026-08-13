@@ -75,4 +75,18 @@ def create_app(config_object=None):
         )
         print(f"Created {created} claim week(s).")
 
+    # Auto-seed claim weeks on first deployment if database is empty
+    @app.before_request
+    def auto_seed_weeks():
+        """Auto-seed claim weeks if none exist (runs once per startup)."""
+        if not hasattr(app, '_weeks_seeded'):
+            from app.models import ClaimWeek
+            if ClaimWeek.query.count() == 0:
+                from app.claims.utils import generate_weeks
+                created = generate_weeks(
+                    app.config["BENEFIT_YEAR_START"], app.config["BENEFIT_YEAR_WEEKS"]
+                )
+                app.logger.info(f"Auto-seeded {created} claim weeks")
+            app._weeks_seeded = True
+
     return app
