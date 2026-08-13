@@ -7,7 +7,7 @@
 <table class="table">
   <thead>
     <tr>
-      <th>Week</th><th>Start</th><th>End</th><th>Jobs applied</th>
+      <th>Year</th><th>Week</th><th>Start</th><th>End</th><th>Jobs applied</th>
       <th>Consulting hrs</th><th>Consulting earned</th>
       <th>EDD confirmation</th><th>EDD reported consulting</th>
     </tr>
@@ -15,6 +15,7 @@
   <tbody>
     {% for week in weeks %}
     <tr>
+      <td>{{ week.year }}</td>
       <td><a href="{{ url_for('claims.week_detail', week_id=week.id) }}">{{ week.week_label }}</a></td>
       <td>{{ week.start_date | dateonly }}</td>
       <td>{{ week.end_date | dateonly }}</td>
@@ -39,7 +40,7 @@
       </td>
     </tr>
     {% else %}
-    <tr><td colspan="8">No claim weeks yet. Run <code>flask seed-weeks</code>.</td></tr>
+    <tr><td colspan="9">No claim weeks yet. Run <code>flask seed-weeks</code>.</td></tr>
     {% endfor %}
   </tbody>
 </table>

@@ -35,6 +35,7 @@ class ClaimWeek(db.Model):
     __tablename__ = "claim_weeks"
 
     id = db.Column(db.Integer, primary_key=True)
+    year = db.Column(db.Integer, nullable=False, index=True)
     week_label = db.Column(db.String(20), nullable=False)  # e.g. "Week 01"
     week_number = db.Column(db.Integer, nullable=False, index=True)
     start_date = db.Column(db.Date, nullable=False, unique=True, index=True)

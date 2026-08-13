@@ -17,6 +17,7 @@ def generate_weeks(start_date, num_weeks, starting_week_number=1):
         existing = ClaimWeek.query.filter_by(start_date=current_start).first()
         if not existing:
             week = ClaimWeek(
+                year=current_start.year,
                 week_label=f"Week {week_number:02d}",
                 week_number=week_number,
                 start_date=current_start,

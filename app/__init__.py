@@ -81,12 +81,20 @@ def create_app(config_object=None):
         """Auto-seed claim weeks if none exist (runs once per startup)."""
         if not hasattr(app, '_weeks_seeded'):
             from app.models import ClaimWeek
+            from datetime import timedelta
             if ClaimWeek.query.count() == 0:
                 from app.claims.utils import generate_weeks
-                created = generate_weeks(
-                    app.config["BENEFIT_YEAR_START"], app.config["BENEFIT_YEAR_WEEKS"]
-                )
-                app.logger.info(f"Auto-seeded {created} claim weeks")
+                # Generate 2026 weeks
+                start_2026 = app.config["BENEFIT_YEAR_START"]
+                num_weeks_2026 = app.config["BENEFIT_YEAR_WEEKS"]
+                created_2026 = generate_weeks(start_2026, num_weeks_2026)
+                
+                # Generate 2027 weeks (starting ~52 weeks later)
+                start_2027 = start_2026 + timedelta(weeks=num_weeks_2026)
+                created_2027 = generate_weeks(start_2027, num_weeks_2026, starting_week_number=1)
+                
+                total = created_2026 + created_2027
+                app.logger.info(f"Auto-seeded {total} claim weeks ({created_2026} for 2026, {created_2027} for 2027)")
             app._weeks_seeded = True
 
     return app
