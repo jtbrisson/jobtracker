@@ -6,13 +6,13 @@ A small personal web app (Python/Flask) for tracking:
 - **Job Applications** — company, position, status, and the actual **resume, cover letter, and job description** files you used, stored in cloud object storage and downloadable later.
 - **Consulting** — engagements with hours and earnings, rolled into the week they fall in so you can cross-check against what you report to EDD.
 
-It's built to be a single-user app: you sign in with your Google account, and only the email(s) you list in `ALLOWED_EMAILS` are allowed in.
+It's built to be a single-user app: you sign in with your GitHub account, and only the username(s) you list in `ALLOWED_GITHUB_USERNAMES` are allowed in.
 
 ## Tech stack
 
 - **Flask** (app factory pattern, blueprints per feature)
 - **SQLAlchemy + Flask-Migrate** — Postgres in production, SQLite locally
-- **Authlib** — Google OAuth login
+- **Authlib** — GitHub OAuth login
 - **boto3** — file uploads to an S3-compatible bucket (Cloudflare R2 by default; AWS S3 works too)
 - **Render** — hosting (web service + managed Postgres), via `render.yaml`
 
@@ -20,7 +20,7 @@ It's built to be a single-user app: you sign in with your Google account, and on
 
 ```
 app/
-  auth/          Google OAuth login/logout
+  auth/          GitHub OAuth login/logout
   claims/        Claim weeks list/detail, EDD toggle buttons, week-lookup helper
   applications/  Job application CRUD + file upload/download
   consulting/    Consulting entry CRUD
@@ -64,11 +64,11 @@ Every job application and consulting entry is automatically linked to the `Claim
    ```
    pip install -r requirements.txt
    ```
-4. Copy the environment template and fill it in (see sections 2 and 3 below for where the Google and R2 values come from):
+4. Copy the environment template and fill it in (see sections 2 and 3 below for where the GitHub and R2 values come from):
    ```
    cp .env.example .env
    ```
-   For a first local run you can leave `GOOGLE_CLIENT_ID`/`GOOGLE_CLIENT_SECRET` as placeholders — everything except the "Sign in with Google" button will still work with a manual test session, but you'll want real credentials before actually using the app day to day.
+   For a first local run you can leave `GITHUB_CLIENT_ID`/`GITHUB_CLIENT_SECRET` as placeholders — everything except the "Sign in with GitHub" button will still work with a manual test session, but you'll want real credentials before actually using the app day to day.
 5. Initialize the database (SQLite, local file at `instance/jobtracker.db`) and load your claim weeks:
    ```
    export FLASK_APP=wsgi.py
@@ -92,16 +92,15 @@ python tests/smoke_test.py
 
 ---
 
-## 2. Google OAuth login setup
+## 2. GitHub OAuth login setup
 
-1. Go to the [Google Cloud Console](https://console.cloud.google.com/) and create a new project (or reuse one).
-2. **APIs & Services → OAuth consent screen**: choose **External**, fill in the app name (e.g. "Job & Claim Tracker") and your email as the support/developer contact. Add your own Google account under **Test users** (this keeps the app private to you while it's in "Testing" publishing status — no need to submit for verification).
-3. **APIs & Services → Credentials → Create Credentials → OAuth client ID**, type **Web application**.
-4. Add **Authorized redirect URIs**:
+1. Go to [github.com/settings/developers](https://github.com/settings/developers) → **OAuth Apps** → **New OAuth App**.
+2. Fill in the app name (e.g. "Job & Claim Tracker") and homepage URL (your local or Render URL).
+3. Set **Authorization callback URL**:
    - `http://127.0.0.1:5000/auth/callback` (local dev)
-   - `https://<your-render-app-name>.onrender.com/auth/callback` (production — add this after you know your Render URL from step 4 below)
-5. Copy the generated **Client ID** and **Client Secret** into `.env` (`GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`) locally, and into Render's environment variables in production.
-6. Set `ALLOWED_EMAILS=jtbrisson@gmail.com` (comma-separate more addresses if you ever want to add someone).
+   - `https://<your-render-app-name>.onrender.com/auth/callback` (production — add/update this once you know your Render URL from step 4 below; GitHub OAuth Apps only allow one callback URL, so you'll need to swap it when moving between local and prod, or create a second OAuth App for production)
+4. Copy the generated **Client ID** and **Client Secret** into `.env` (`GITHUB_CLIENT_ID`, `GITHUB_CLIENT_SECRET`) locally, and into Render's environment variables in production.
+5. Set `ALLOWED_GITHUB_USERNAMES=your-github-username` (comma-separate more usernames if you ever want to add someone).
 
 ---
 
@@ -144,9 +143,9 @@ gh repo create job-claim-tracker --private --source=. --push
 
 1. Push the repo to GitHub (step 4).
 2. In the [Render dashboard](https://dashboard.render.com/), click **New → Blueprint**, connect your GitHub account, and select this repo. Render reads `render.yaml` and provisions both the web service and a free Postgres database automatically.
-3. When prompted, fill in the environment variables marked `sync: false` in `render.yaml`: `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`, `ALLOWED_EMAILS`, `S3_ENDPOINT_URL`, `S3_ACCESS_KEY_ID`, `S3_SECRET_ACCESS_KEY`, `S3_BUCKET_NAME`.
+3. When prompted, fill in the environment variables marked `sync: false` in `render.yaml`: `GITHUB_CLIENT_ID`, `GITHUB_CLIENT_SECRET`, `ALLOWED_GITHUB_USERNAMES`, `S3_ENDPOINT_URL`, `S3_ACCESS_KEY_ID`, `S3_SECRET_ACCESS_KEY`, `S3_BUCKET_NAME`.
 4. Deploy. Render runs `flask db upgrade` automatically on every deploy (see `startCommand` in `render.yaml`), so the database schema is always up to date.
-5. Note the live URL (`https://job-tracker-app-xxxx.onrender.com`), add `<that-url>/auth/callback` to the Google OAuth **Authorized redirect URIs** (step 2.4 above), and save.
+5. Note the live URL (`https://job-tracker-app-xxxx.onrender.com`), and set `<that-url>/auth/callback` as the GitHub OAuth App's **Authorization callback URL** (step 2.3 above).
 6. One-time: seed the claim weeks in production. In the Render dashboard, open your web service's **Shell** tab and run:
    ```
    flask seed-weeks
