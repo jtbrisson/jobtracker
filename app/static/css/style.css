@@ -71,7 +71,7 @@ h2 { font-size: 18px; margin: 28px 0 10px; }
 
 .table-wrapper { display: block; width: 100%; max-height: calc(100vh - 200px); overflow-y: auto; border: 1px solid var(--border); border-radius: var(--radius); box-shadow: var(--shadow); }
 .table { width: 100%; border-collapse: collapse; background: var(--surface); }
-.table thead { position: sticky; top: 0; background: #fafafa; z-index: 10; }
+.table thead { position: sticky; top: 0; background: #c9ada7; z-index: 10; }
 .table th, .table td { text-align: left; padding: 10px 12px; border-bottom: 1px solid var(--border); font-size: 14px; }
 .table th { font-weight: 600; color: var(--muted); }
 .table tr:last-child td { border-bottom: none; }
