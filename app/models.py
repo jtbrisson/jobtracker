@@ -44,6 +44,7 @@ class ClaimWeek(db.Model):
     # Tri-state: True = Yes, False = No, None = N/A
     edd_confirmation = db.Column(db.Boolean, default=False, nullable=True)
     edd_reported_consulting = db.Column(db.Boolean, default=False, nullable=True)
+    expected_edd_amount = db.Column(db.Numeric(10, 2), nullable=False, default=0)
     notes = db.Column(db.Text)
 
     job_applications = db.relationship(
@@ -72,6 +73,21 @@ class ClaimWeek(db.Model):
         for entry in self.consulting_entries:
             total += float(entry.total_earned or 0)
         return total
+
+    @property
+    def edd_deduction(self):
+        """CA EDD partial-benefit deduction: earnings above $25 or 25% of
+        earnings (whichever is greater) reduce the weekly benefit dollar
+        for dollar.
+        """
+        earned = self.total_consulting_earned
+        disregard = max(25.0, 0.25 * earned)
+        return max(earned - disregard, 0)
+
+    @property
+    def net_edd_amount(self):
+        expected = float(self.expected_edd_amount or 0)
+        return max(expected - self.edd_deduction, 0)
 
     def __repr__(self):
         return f"<ClaimWeek {self.week_label} {self.start_date}..{self.end_date}>"

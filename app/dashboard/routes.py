@@ -31,6 +31,7 @@ def home():
     unconfirmed_weeks = ClaimWeek.query.filter(
         ClaimWeek.end_date < date.today(), ClaimWeek.edd_confirmation.isnot(True)
     ).count()
+    total_net_edd = sum(w.net_edd_amount for w in ClaimWeek.query.all())
 
     return render_template(
         "dashboard.html",
@@ -40,4 +41,5 @@ def home():
         recent_consulting=recent_consulting,
         total_applications=total_applications,
         unconfirmed_weeks=unconfirmed_weeks,
+        total_net_edd=total_net_edd,
     )

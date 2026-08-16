@@ -11,6 +11,32 @@
   EDD reported consulting: <strong>{{ "Yes" if week.edd_reported_consulting == True else ("No" if week.edd_reported_consulting == False else "N/A") }}</strong>
 </p>
 
+<h2>EDD payment</h2>
+<div class="cards">
+  <div class="card">
+    <h3>Expected</h3>
+    <p class="big">{{ week.expected_edd_amount | money }}</p>
+  </div>
+  <div class="card">
+    <h3>Income deduction</h3>
+    <p class="big">{{ week.edd_deduction | money }}</p>
+    <p>from {{ week.total_consulting_earned | money }} consulting income</p>
+  </div>
+  <div class="card">
+    <h3>Net payment</h3>
+    <p class="big">{{ week.net_edd_amount | money }}</p>
+  </div>
+</div>
+<form method="post" action="{{ url_for('claims.update_amount', week_id=week.id) }}" class="form">
+  {{ amount_form.hidden_tag() }}
+  <div class="field">
+    {{ amount_form.expected_edd_amount.label }}
+    {{ amount_form.expected_edd_amount() }}
+    {% for e in amount_form.expected_edd_amount.errors %}<p class="error">{{ e }}</p>{% endfor %}
+  </div>
+  {{ amount_form.submit(class_="btn") }}
+</form>
+
 <h2>Job applications this week ({{ week.jobs_applied_count }})</h2>
 <table class="table">
   <thead><tr><th>Date</th><th>Company</th><th>Position</th><th>Status</th></tr></thead>

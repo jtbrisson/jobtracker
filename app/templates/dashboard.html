@@ -29,6 +29,12 @@
     <p class="big">{{ unconfirmed_weeks }}</p>
     <p>past weeks not yet marked confirmed</p>
   </div>
+
+  <div class="card">
+    <h3>Total EDD (net)</h3>
+    <p class="big">{{ total_net_edd | money }}</p>
+    <p>expected minus income deductions, all weeks</p>
+  </div>
 </div>
 
 <div class="grid-2">

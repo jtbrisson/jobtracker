@@ -4,6 +4,7 @@ from app.auth.routes import login_required
 from app.extensions import db
 from app.models import ClaimWeek
 from app.claims import bp
+from app.claims.forms import ExpectedAmountForm
 
 # Tri-state cycle for the EDD toggle buttons: No -> Yes -> N/A -> No -> ...
 EDD_STATE_CYCLE = [False, True, None]
@@ -34,4 +35,19 @@ def toggle_flag(week_id):
 @login_required
 def week_detail(week_id):
     week = ClaimWeek.query.get_or_404(week_id)
-    return render_template("claims/detail.html", week=week)
+    amount_form = ExpectedAmountForm(obj=week)
+    return render_template("claims/detail.html", week=week, amount_form=amount_form)
+
+
+@bp.route("/<int:week_id>/amount", methods=["POST"])
+@login_required
+def update_amount(week_id):
+    week = ClaimWeek.query.get_or_404(week_id)
+    form = ExpectedAmountForm()
+    if form.validate_on_submit():
+        week.expected_edd_amount = form.expected_edd_amount.data
+        db.session.commit()
+        flash("Expected EDD amount updated.", "success")
+    else:
+        flash("Couldn't save that amount.", "error")
+    return redirect(url_for("claims.week_detail", week_id=week_id))

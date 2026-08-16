@@ -10,6 +10,7 @@
     <tr>
       <th>Year</th><th>Week</th><th>Start</th><th>End</th><th>Jobs applied</th>
       <th>Consulting hrs</th><th>Consulting earned</th>
+      <th>Expected EDD</th><th>Net EDD</th>
       <th>EDD confirmation</th><th>EDD reported consulting</th>
     </tr>
   </thead>
@@ -23,6 +24,8 @@
       <td>{{ week.jobs_applied_count }}</td>
       <td>{{ week.total_consulting_hours }}</td>
       <td>{{ week.total_consulting_earned | money }}</td>
+      <td>{{ week.expected_edd_amount | money }}</td>
+      <td>{{ week.net_edd_amount | money }}</td>
       <td>
         <form method="post" action="{{ url_for('claims.toggle_flag', week_id=week.id) }}">
           <input type="hidden" name="field" value="edd_confirmation">
@@ -41,7 +44,7 @@
       </td>
     </tr>
     {% else %}
-    <tr><td colspan="9">No claim weeks yet. Run <code>flask seed-weeks</code>.</td></tr>
+    <tr><td colspan="11">No claim weeks yet. Run <code>flask seed-weeks</code>.</td></tr>
     {% endfor %}
   </tbody>
   </table>
