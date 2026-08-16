@@ -46,7 +46,7 @@ class Config:
     # First day (a Monday, matching CA EDD weekly claim weeks) of the benefit
     # year the claim-weeks table should start generating from.
     BENEFIT_YEAR_START = date.fromisoformat(
-        os.environ.get("BENEFIT_YEAR_START", "2025-12-29")
+        os.environ.get("BENEFIT_YEAR_START", "2026-06-01")
     )
     BENEFIT_YEAR_WEEKS = int(os.environ.get("BENEFIT_YEAR_WEEKS", "53"))
 

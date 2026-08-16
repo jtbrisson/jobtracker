@@ -4,12 +4,17 @@ from app.extensions import db
 from app.models import ClaimWeek
 
 
-def generate_weeks(start_date, num_weeks, starting_week_number=1):
+def generate_weeks(start_date, num_weeks, starting_week_number=None):
     """Create `num_weeks` consecutive 7-day ClaimWeek rows starting at
     `start_date`, matching the layout of the uploaded spreadsheet's 'Date'
     table (Week 01, Week 02, ...). Skips any week whose start_date already
     exists. Returns the number of weeks created.
+
+    If `starting_week_number` isn't given, it's derived from `start_date`'s
+    real ISO calendar week, so week labels line up with actual ISO weeks.
     """
+    if starting_week_number is None:
+        starting_week_number = start_date.isocalendar()[1]
     created = 0
     current_start = start_date
     for i in range(num_weeks):

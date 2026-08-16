@@ -89,9 +89,9 @@ def create_app(config_object=None):
                 num_weeks_2026 = app.config["BENEFIT_YEAR_WEEKS"]
                 created_2026 = generate_weeks(start_2026, num_weeks_2026)
                 
-                # Generate 2027 weeks (starting ~52 weeks later)
+                # Generate the following year's weeks (starting ~52 weeks later)
                 start_2027 = start_2026 + timedelta(weeks=num_weeks_2026)
-                created_2027 = generate_weeks(start_2027, num_weeks_2026, starting_week_number=1)
+                created_2027 = generate_weeks(start_2027, num_weeks_2026)
                 
                 total = created_2026 + created_2027
                 app.logger.info(f"Auto-seeded {total} claim weeks ({created_2026} for 2026, {created_2027} for 2027)")
