@@ -4,6 +4,18 @@
 <div class="section-head">
   <h1>Claim Weeks</h1>
 </div>
+<div class="card" style="margin-bottom: 20px;">
+  <h3>Set weekly benefit amount</h3>
+  <form method="post" action="{{ url_for('claims.bulk_set_amount') }}" style="display: flex; align-items: flex-end; gap: 12px; flex-wrap: wrap;">
+    {{ bulk_form.hidden_tag() }}
+    <div class="field" style="margin-bottom: 0;">
+      {{ bulk_form.expected_edd_amount.label }}
+      {{ bulk_form.expected_edd_amount(style="width: 160px;") }}
+    </div>
+    {{ bulk_form.submit(class_="btn") }}
+  </form>
+  <p class="hint">Applies to this week and every week still ahead &mdash; won't touch weeks that have already passed.</p>
+</div>
 <div class="table-wrapper">
   <table class="table">
     <thead>

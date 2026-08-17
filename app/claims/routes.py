@@ -1,10 +1,12 @@
+from datetime import date
+
 from flask import render_template, request, redirect, url_for, flash
 
 from app.auth.routes import login_required
 from app.extensions import db
 from app.models import ClaimWeek
 from app.claims import bp
-from app.claims.forms import ExpectedAmountForm
+from app.claims.forms import ExpectedAmountForm, BulkAmountForm
 
 # Tri-state cycle for the EDD toggle buttons: No -> Yes -> N/A -> No -> ...
 EDD_STATE_CYCLE = [False, True, None]
@@ -14,7 +16,23 @@ EDD_STATE_CYCLE = [False, True, None]
 @login_required
 def list_weeks():
     weeks = ClaimWeek.query.order_by(ClaimWeek.start_date).all()
-    return render_template("claims/list.html", weeks=weeks)
+    bulk_form = BulkAmountForm()
+    return render_template("claims/list.html", weeks=weeks, bulk_form=bulk_form)
+
+
+@bp.route("/bulk-amount", methods=["POST"])
+@login_required
+def bulk_set_amount():
+    form = BulkAmountForm()
+    if form.validate_on_submit():
+        weeks = ClaimWeek.query.filter(ClaimWeek.end_date >= date.today()).all()
+        for week in weeks:
+            week.expected_edd_amount = form.expected_edd_amount.data
+        db.session.commit()
+        flash(f"Set expected EDD amount for {len(weeks)} week(s).", "success")
+    else:
+        flash("Couldn't save that amount.", "error")
+    return redirect(url_for("claims.list_weeks"))
 
 
 @bp.route("/<int:week_id>/toggle", methods=["POST"])
