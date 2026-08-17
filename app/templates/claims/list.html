@@ -16,14 +16,34 @@
   </form>
   <p class="hint">Applies to this week and every week still ahead &mdash; won't touch weeks that have already passed.</p>
 </div>
+<div class="card" style="margin-bottom: 20px;">
+  <h3>Claim details</h3>
+  <form method="post" action="{{ url_for('claims.update_claim_settings') }}" style="display: flex; align-items: flex-end; gap: 12px; flex-wrap: wrap;">
+    {{ claim_form.hidden_tag() }}
+    <div class="field" style="margin-bottom: 0;">
+      {{ claim_form.claim_start_date.label }}
+      {{ claim_form.claim_start_date() }}
+    </div>
+    <div class="field" style="margin-bottom: 0;">
+      {{ claim_form.claim_end_date.label }}
+      {{ claim_form.claim_end_date() }}
+    </div>
+    <div class="field" style="margin-bottom: 0;">
+      {{ claim_form.max_benefit_amount.label }}
+      {{ claim_form.max_benefit_amount(style="width: 160px;") }}
+    </div>
+    {{ claim_form.submit(class_="btn") }}
+  </form>
+  <p class="hint">Weeks inside this range count as CA EDD eligible; weeks outside it are marked N/A and excluded from the dashboard totals.</p>
+</div>
 <div class="table-wrapper">
   <table class="table">
     <thead>
     <tr>
-      <th>Year</th><th>Week</th><th>Start</th><th>End</th><th>Jobs applied</th>
+      <th>Year</th><th>Week</th><th>Start</th><th>End</th><th>CA EDD Eligible?</th><th>Jobs applied</th>
       <th>Consulting hrs</th><th>Consulting earned</th>
       <th>Expected EDD</th><th>Net EDD</th>
-      <th>EDD confirmation</th><th>EDD reported consulting</th>
+      <th>CA EDD Confirmation</th><th>CA EDD Reported Consulting</th>
     </tr>
   </thead>
   <tbody>
@@ -33,30 +53,39 @@
       <td><a href="{{ url_for('claims.week_detail', week_id=week.id) }}">{{ week.week_label }}</a></td>
       <td>{{ week.start_date | dateonly }}</td>
       <td>{{ week.end_date | dateonly }}</td>
+      <td><span class="toggle {{ 'on' if week.is_eligible else 'off' }}">{{ "Yes" if week.is_eligible else "No" }}</span></td>
       <td>{{ week.jobs_applied_count }}</td>
       <td>{{ week.total_consulting_hours }}</td>
       <td>{{ week.total_consulting_earned | money }}</td>
       <td>{{ week.expected_edd_amount | money }}</td>
       <td>{{ week.net_edd_amount | money }}</td>
       <td>
+        {% if week.is_eligible %}
         <form method="post" action="{{ url_for('claims.toggle_flag', week_id=week.id) }}">
           <input type="hidden" name="field" value="edd_confirmation">
           <button type="submit" class="toggle {{ 'on' if week.edd_confirmation == True else ('off' if week.edd_confirmation == False else 'na') }}">
             {{ "Yes" if week.edd_confirmation == True else ("No" if week.edd_confirmation == False else "N/A") }}
           </button>
         </form>
+        {% else %}
+        <span class="toggle na">N/A</span>
+        {% endif %}
       </td>
       <td>
+        {% if week.is_eligible %}
         <form method="post" action="{{ url_for('claims.toggle_flag', week_id=week.id) }}">
           <input type="hidden" name="field" value="edd_reported_consulting">
           <button type="submit" class="toggle {{ 'on' if week.edd_reported_consulting == True else ('off' if week.edd_reported_consulting == False else 'na') }}">
             {{ "Yes" if week.edd_reported_consulting == True else ("No" if week.edd_reported_consulting == False else "N/A") }}
           </button>
         </form>
+        {% else %}
+        <span class="toggle na">N/A</span>
+        {% endif %}
       </td>
     </tr>
     {% else %}
-    <tr><td colspan="11">No claim weeks yet. Run <code>flask seed-weeks</code>.</td></tr>
+    <tr><td colspan="12">No claim weeks yet. Run <code>flask seed-weeks</code>.</td></tr>
     {% endfor %}
   </tbody>
   </table>

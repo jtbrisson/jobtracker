@@ -93,6 +93,23 @@ class ClaimWeek(db.Model):
         return f"<ClaimWeek {self.week_label} {self.start_date}..{self.end_date}>"
 
 
+class ClaimSettings(db.Model):
+    """Singleton row holding the one active CA EDD claim's date range and
+    maximum benefit amount. Used to auto-derive which ClaimWeek rows fall
+    inside the claim (eligible) vs. outside it.
+    """
+
+    __tablename__ = "claim_settings"
+
+    id = db.Column(db.Integer, primary_key=True)
+    claim_start_date = db.Column(db.Date)
+    claim_end_date = db.Column(db.Date)
+    max_benefit_amount = db.Column(db.Numeric(10, 2), nullable=False, default=0)
+
+    def __repr__(self):
+        return f"<ClaimSettings {self.claim_start_date}..{self.claim_end_date}>"
+
+
 class JobApplication(db.Model):
     __tablename__ = "job_applications"
 

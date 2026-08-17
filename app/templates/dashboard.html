@@ -10,7 +10,7 @@
       <p class="big">{{ this_week.week_label }}</p>
       <p>{{ this_week.start_date | dateonly }} &ndash; {{ this_week.end_date | dateonly }}</p>
       <p>
-        EDD confirmation:
+        CA EDD Confirmation:
         <strong>{{ "Done" if this_week.edd_confirmation == True else ("Marked No" if this_week.edd_confirmation == False else "Not yet") }}</strong>
       </p>
     {% else %}

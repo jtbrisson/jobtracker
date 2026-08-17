@@ -4,7 +4,7 @@ from flask import render_template
 
 from app.auth.routes import login_required
 from app.models import ClaimWeek, JobApplication, ConsultingEntry
-from app.claims.utils import current_week
+from app.claims.utils import current_week, get_claim_settings, eligible_weeks_query
 from app.dashboard import bp
 
 
@@ -27,14 +27,16 @@ def home():
         ConsultingEntry.query.order_by(ConsultingEntry.start_date.desc()).limit(5).all()
     )
 
+    claim_settings = get_claim_settings()
+
     total_applications = JobApplication.query.count()
-    unconfirmed_weeks = ClaimWeek.query.filter(
+    unconfirmed_weeks = eligible_weeks_query(claim_settings).filter(
         ClaimWeek.end_date < date.today(), ClaimWeek.edd_confirmation.isnot(True)
     ).count()
-    total_net_edd = sum(w.net_edd_amount for w in ClaimWeek.query.all())
+    total_net_edd = sum(w.net_edd_amount for w in eligible_weeks_query(claim_settings).all())
     remaining_net_edd = sum(
         w.net_edd_amount
-        for w in ClaimWeek.query.filter(ClaimWeek.end_date >= date.today()).all()
+        for w in eligible_weeks_query(claim_settings).filter(ClaimWeek.end_date >= date.today()).all()
     )
 
     return render_template(

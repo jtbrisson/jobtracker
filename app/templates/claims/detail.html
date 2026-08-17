@@ -7,8 +7,9 @@
 </div>
 <p>{{ week.start_date | dateonly }} &ndash; {{ week.end_date | dateonly }}</p>
 <p>
-  EDD confirmation: <strong>{{ "Yes" if week.edd_confirmation == True else ("No" if week.edd_confirmation == False else "N/A") }}</strong> &middot;
-  EDD reported consulting: <strong>{{ "Yes" if week.edd_reported_consulting == True else ("No" if week.edd_reported_consulting == False else "N/A") }}</strong>
+  CA EDD Eligible: <strong>{{ "Yes" if week.is_eligible else "No" }}</strong> &middot;
+  CA EDD Confirmation: <strong>{{ "Yes" if week.edd_confirmation == True else ("No" if week.edd_confirmation == False else "N/A") }}</strong> &middot;
+  CA EDD Reported Consulting: <strong>{{ "Yes" if week.edd_reported_consulting == True else ("No" if week.edd_reported_consulting == False else "N/A") }}</strong>
 </p>
 
 <h2>EDD payment</h2>
