@@ -7,7 +7,9 @@ from app.extensions import db
 from app.models import ClaimWeek
 from app.claims import bp
 from app.claims.forms import ExpectedAmountForm, BulkAmountForm, ClaimSettingsForm
-from app.claims.utils import get_claim_settings, is_eligible, eligible_weeks_query, apply_eligibility_effects
+from app.claims.utils import (
+    get_claim_settings, is_eligible, eligible_weeks_query, apply_eligibility_effects, current_week,
+)
 
 # Tri-state cycle for the EDD toggle buttons: No -> Yes -> N/A -> No -> ...
 EDD_STATE_CYCLE = [False, True, None]
@@ -22,8 +24,10 @@ def list_weeks():
         week.is_eligible = is_eligible(week, settings)
     bulk_form = BulkAmountForm()
     claim_form = ClaimSettingsForm(obj=settings)
+    this_week = current_week()
     return render_template(
-        "claims/list.html", weeks=weeks, bulk_form=bulk_form, claim_form=claim_form
+        "claims/list.html", weeks=weeks, bulk_form=bulk_form, claim_form=claim_form,
+        this_week_id=this_week.id if this_week else None,
     )
 
 

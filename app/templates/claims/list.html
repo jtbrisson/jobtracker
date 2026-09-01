@@ -48,7 +48,7 @@
   </thead>
   <tbody>
     {% for week in weeks %}
-    <tr>
+    <tr class="{{ 'current-week' if week.id == this_week_id else '' }}">
       <td>{{ week.year }}</td>
       <td><a href="{{ url_for('claims.week_detail', week_id=week.id) }}">{{ week.week_label }}</a></td>
       <td>{{ week.start_date | dateonly("%d/%m/%y") }}</td>
