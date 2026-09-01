@@ -51,8 +51,8 @@
     <tr>
       <td>{{ week.year }}</td>
       <td><a href="{{ url_for('claims.week_detail', week_id=week.id) }}">{{ week.week_label }}</a></td>
-      <td>{{ week.start_date | dateonly }}</td>
-      <td>{{ week.end_date | dateonly }}</td>
+      <td>{{ week.start_date | dateonly("%d/%m/%y") }}</td>
+      <td>{{ week.end_date | dateonly("%d/%m/%y") }}</td>
       <td><span class="toggle {{ 'on' if week.is_eligible else 'off' }}">{{ "Yes" if week.is_eligible else "No" }}</span></td>
       <td>{{ week.jobs_applied_count }}</td>
       <td>{{ week.total_consulting_hours }}</td>
